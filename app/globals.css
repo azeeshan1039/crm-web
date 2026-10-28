@@ -1,0 +1,201 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-ui);
+  --font-serif: var(--font-letter);
+  --font-mono: var(--font-code);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-paper: var(--paper);
+  --color-paper-ink: var(--paper-ink);
+  --color-carbon: var(--carbon);
+  --color-carbon-soft: var(--carbon-soft);
+  --color-attention: var(--attention);
+  --color-attention-soft: var(--attention-soft);
+  --color-good: var(--good);
+  --color-good-soft: var(--good-soft);
+  --color-term: var(--term);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/*
+  Palette - "carbon copy":
+    paper   #F3F4F7  cool grey desk
+    ink     #1B1E2B  navy-black text
+    carbon  #3B3FB6  carbon-paper indigo (primary actions, selection)
+    amber   #C97716  needs attention (due, review, flags)
+    green   #1F8A5B  clean / done
+*/
+:root {
+  --radius: 0.5rem;
+  --background: #f3f4f7;
+  --foreground: #1b1e2b;
+  --card: #ffffff;
+  --card-foreground: #1b1e2b;
+  --popover: #ffffff;
+  --popover-foreground: #1b1e2b;
+  --primary: #3b3fb6;
+  --primary-foreground: #ffffff;
+  --secondary: #e8eaf0;
+  --secondary-foreground: #1b1e2b;
+  --muted: #eceef3;
+  --muted-foreground: #626779;
+  --accent: #e9eafa;
+  --accent-foreground: #2b2e8f;
+  --destructive: #c23a3a;
+  --border: #dfe2ea;
+  --input: #d5d9e3;
+  --ring: #3b3fb6;
+  --chart-1: #3b3fb6;
+  --chart-2: #1f8a5b;
+  --chart-3: #c97716;
+  --chart-4: #0d8b8b;
+  --chart-5: #8a5cd6;
+  --sidebar: #e9ebf1;
+  --sidebar-foreground: #1b1e2b;
+  --sidebar-primary: #3b3fb6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #dcdff0;
+  --sidebar-accent-foreground: #1b1e2b;
+  --sidebar-border: #d9dce6;
+  --sidebar-ring: #3b3fb6;
+
+  --paper: #fffdf9;
+  --paper-ink: #23252f;
+  --carbon: #3b3fb6;
+  --carbon-soft: #e9eafa;
+  --attention: #b86a0f;
+  --attention-soft: #fbf0e0;
+  --good: #1a7a50;
+  --good-soft: #e3f3ea;
+  --term: #12141c;
+}
+
+.dark {
+  --background: #14161f;
+  --foreground: #e6e8ef;
+  --card: #1b1e29;
+  --card-foreground: #e6e8ef;
+  --popover: #1f2230;
+  --popover-foreground: #e6e8ef;
+  --primary: #7f84f0;
+  --primary-foreground: #10121a;
+  --secondary: #262a38;
+  --secondary-foreground: #e6e8ef;
+  --muted: #232634;
+  --muted-foreground: #9599ab;
+  --accent: #262a45;
+  --accent-foreground: #c9cbff;
+  --destructive: #e36a6a;
+  --border: #2a2e3d;
+  --input: #333849;
+  --ring: #7f84f0;
+  --chart-1: #7f84f0;
+  --chart-2: #4cc38a;
+  --chart-3: #e8a145;
+  --chart-4: #3cbcbc;
+  --chart-5: #b08cf0;
+  --sidebar: #181a24;
+  --sidebar-foreground: #e6e8ef;
+  --sidebar-primary: #7f84f0;
+  --sidebar-primary-foreground: #10121a;
+  --sidebar-accent: #252839;
+  --sidebar-accent-foreground: #e6e8ef;
+  --sidebar-border: #262a38;
+  --sidebar-ring: #7f84f0;
+
+  --paper: #f4f1ea;
+  --paper-ink: #23252f;
+  --carbon: #7f84f0;
+  --carbon-soft: #262a45;
+  --attention: #e8a145;
+  --attention-soft: #3a2c19;
+  --good: #4cc38a;
+  --good-soft: #17322a;
+  --term: #0d0f15;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: "ss01", "cv11";
+  }
+  ::selection {
+    background: color-mix(in oklab, var(--carbon) 25%, transparent);
+  }
+}
+
+/* Thin, quiet scrollbars for the dense panels */
+.thin-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in oklab, var(--muted-foreground) 35%, transparent) transparent;
+}
+
+/* The draft letter: the one place the UI gets expressive */
+.letter {
+  background: var(--paper);
+  color: var(--paper-ink);
+  font-family: var(--font-letter), Georgia, serif;
+  box-shadow:
+    0 1px 0 rgba(27, 30, 43, 0.04),
+    0 8px 24px -12px rgba(27, 30, 43, 0.25);
+  background-image: linear-gradient(transparent 0, transparent calc(100% - 1px), rgba(59, 63, 182, 0.06) 100%);
+  background-size: 100% 1.75rem;
+}
+
+/* Windows "Show animations" off => reduced motion. Decorative motion stops (one short run, no loop);
+   status indicators (spinners, live dots, cursor) keep a slow, calm loop so you can still see work happening. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .animate-spin {
+    animation-duration: 2.4s !important;
+    animation-iteration-count: infinite !important;
+  }
+  .animate-pulse {
+    animation-duration: 3s !important;
+    animation-iteration-count: infinite !important;
+  }
+}
