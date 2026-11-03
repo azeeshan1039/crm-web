@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useTheme } from "next-themes";
 import {
-  Bot, Columns3, Gauge, Inbox, Loader2, LogOut, Mail, Moon, Settings, Sun, Table2, WifiOff,
+  Bot, Columns3, Gauge, Inbox, Loader2, LogOut, Mail, Moon, Plug, Settings, Sun, Table2, WifiOff,
 } from "lucide-react";
 import { useAuthUser } from "@/components/auth-gate";
 import { api, post } from "@/lib/api";
@@ -20,6 +20,7 @@ const NAV = [
   { href: "/autopilot", label: "Autopilot", icon: Bot },
   { href: "/gmail", label: "Send queue", icon: Mail },
   { href: "/dashboard", label: "Dashboard", icon: Gauge },
+  { href: "/mcp", label: "MCP guide", icon: Plug },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
