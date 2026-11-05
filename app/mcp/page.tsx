@@ -19,7 +19,7 @@ const CURSOR_CONFIG = `{
 const TOOLS = [
   { name: "list_leads", does: "Search leads by company, website, location, services, stage, or campaign." },
   { name: "get_lead", does: "Open one lead, including the draft, contact, score, and recent activity." },
-  { name: "create_lead", does: "Add a lead in To research. A matching website or company name is rejected unless you force it." },
+  { name: "create_lead", does: "Add a lead in To research. assignee_email is required and must be an existing CRM user. Anyone can later edit or delete that lead." },
   { name: "update_lead", does: "Change profile, contact, draft, score, and campaign fields on a lead this server is allowed to edit." },
   { name: "set_stage", does: "Move a lead. Uses the same stage rules as the Leads page." },
   { name: "delete_lead", does: "Permanently delete a lead this server is allowed to edit, including its activity." },
@@ -109,7 +109,7 @@ export default function McpGuidePage() {
           <h2 className="text-base font-semibold">What you can ask</h2>
           <ul className="list-disc space-y-1.5 pl-5 text-sm text-muted-foreground">
             <li>List leads in To research.</li>
-            <li>Create a lead for Acme Studio, website https://acme.example.</li>
+            <li>Create a lead for Acme Studio, website https://acme.example, and assign it to alex@example.com.</li>
             <li>Show me lead 12, then update the contact email.</li>
           </ul>
           <p className="text-sm text-muted-foreground">

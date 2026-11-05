@@ -121,6 +121,7 @@ function Card({ lead, overlay }: { lead: Lead; overlay?: boolean }) {
         <div className="mt-0.5 truncate text-xs text-muted-foreground">{lead.geography}</div>
       ) : null}
       <div className="mt-2 flex flex-wrap items-center gap-1">
+        {lead.assignee_name ? <Pill>{lead.assignee_name}</Pill> : null}
         <ScoreBadge total={lead.score_total} partial={isPartialScore(lead)} />
         <AiBadge status={lead.ai_status} flags={lead.ai_flags} />
         {lead.contact_is_form ? <Pill>form</Pill> : null}

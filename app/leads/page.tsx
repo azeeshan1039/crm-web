@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { toast } from "sonner";
 import { Loader2, Plus, Search, ShieldCheck, X } from "lucide-react";
@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/dialog";
 
 const PAGE = 200;
-const COLS = "36px 52px minmax(220px,2fr) 130px 110px 64px 96px minmax(140px,1fr) 90px 54px minmax(160px,1.2fr) 92px";
+const COLS = "36px 52px minmax(220px,2fr) 140px 130px 110px 64px 96px minmax(140px,1fr) 90px 54px minmax(160px,1.2fr) 92px";
 
 export default function LeadsPage() {
   return (
@@ -111,13 +111,13 @@ function Leads() {
       )}
 
       <div ref={parent} className="min-h-0 flex-1 overflow-auto thin-scroll">
-        <div className="min-w-[1240px]">
+        <div className="min-w-[1380px]">
           <div className="sticky top-0 z-10 grid border-b bg-background/95 px-4 py-2 text-xs font-medium text-muted-foreground backdrop-blur md:px-6"
             style={{ gridTemplateColumns: COLS }}>
             <input type="checkbox" aria-label="Select loaded rows" className="size-4 accent-[var(--carbon)]"
               checked={allLoadedSelected} onChange={() => setSelected(allLoadedSelected ? new Set() : new Set(selectable.map((r) => r.id)))} />
             <span className="text-right pr-3">Reviews</span>
-            <span>Company</span><span>Stage</span><span>AI</span><span>Score</span><span>Site</span>
+            <span>Company</span><span>Assignee</span><span>Stage</span><span>AI</span><span>Score</span><span>Site</span>
             <span>Location</span><span>Team</span><span>Rating</span><span>Next action</span><span>Follow-up</span>
           </div>
           <div style={{ height: virt.getTotalSize(), position: "relative" }}>
@@ -136,6 +136,7 @@ function Leads() {
 
 type NewLeadForm = {
   company_name: string;
+  assignee_user_id: string;
   website: string;
   geography: string;
   source_type: string;
@@ -146,6 +147,7 @@ type NewLeadForm = {
 
 const EMPTY_LEAD: NewLeadForm = {
   company_name: "",
+  assignee_user_id: "",
   website: "",
   geography: "",
   source_type: "manual",
@@ -156,6 +158,10 @@ const EMPTY_LEAD: NewLeadForm = {
 
 function NewLeadDialog({ onCreated }: { onCreated: (id: number) => void }) {
   const qc = useQueryClient();
+  const { data: people } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => api<{ users: { id: number; name: string; email: string }[] }>("/api/users"),
+  });
   const [open, setOpen] = React.useState(false);
   const [form, setForm] = React.useState<NewLeadForm>(EMPTY_LEAD);
   const [busy, setBusy] = React.useState(false);
@@ -163,10 +169,12 @@ function NewLeadDialog({ onCreated }: { onCreated: (id: number) => void }) {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!form.assignee_user_id) return;
     setBusy(true);
     try {
       const r = await post<{ id: number }>("/api/leads", {
         ...form,
+        assignee_user_id: Number(form.assignee_user_id),
         review_count: form.review_count ? Number(form.review_count) : 0,
       });
       toast.success("Lead added");
@@ -190,13 +198,23 @@ function NewLeadDialog({ onCreated }: { onCreated: (id: number) => void }) {
         <form onSubmit={submit} className="space-y-4">
           <DialogHeader>
             <DialogTitle>Add lead</DialogTitle>
-            <DialogDescription>Create a manually owned lead and send it to To research.</DialogDescription>
+            <DialogDescription>Name the company and the person who will manage this lead. It starts in To research.</DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2 sm:col-span-2">
               <Label htmlFor="lead-company">Company name</Label>
               <Input id="lead-company" value={form.company_name} onChange={(e) => set("company_name", e.target.value)} required autoFocus />
+            </div>
+            <div className="space-y-2 sm:col-span-2">
+              <Label htmlFor="lead-assignee">Assignee</Label>
+              <select id="lead-assignee" required value={form.assignee_user_id} onChange={(e) => set("assignee_user_id", e.target.value)}
+                className="h-9 w-full rounded-md border border-input bg-card px-2.5 text-sm dark:bg-input/30">
+                <option value="">Choose who manages this lead</option>
+                {(people?.users || []).map((user) => (
+                  <option key={user.id} value={user.id}>{user.name} ({user.email})</option>
+                ))}
+              </select>
             </div>
             <div className="space-y-2">
               <Label htmlFor="lead-website">Website</Label>
@@ -226,7 +244,7 @@ function NewLeadDialog({ onCreated }: { onCreated: (id: number) => void }) {
 
           <DialogFooter>
             <Button type="button" variant="ghost" onClick={() => setOpen(false)} disabled={busy}>Cancel</Button>
-            <Button type="submit" disabled={busy || !form.company_name.trim()}>
+            <Button type="submit" disabled={busy || !form.company_name.trim() || !form.assignee_user_id}>
               {busy ? <Loader2 className="animate-spin" /> : <Plus />}Add lead
             </Button>
           </DialogFooter>
@@ -249,6 +267,7 @@ function Row({ lead: l, top, checked, onCheck }: { lead: Lead; top: number; chec
         <div className="truncate font-medium">{l.company_name}</div>
         <div className="truncate text-xs text-muted-foreground">{l.subject || l.normalized_domain || "No website"}</div>
       </div>
+      <span className="truncate pr-3 text-muted-foreground">{l.assignee_name || "—"}</span>
       <StageBadge stage={l.stage} />
       <span><AiBadge status={l.ai_status} flags={l.ai_flags} /></span>
       <span><ScoreBadge total={l.score_total} partial={isPartialScore(l)} /></span>

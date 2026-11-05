@@ -78,6 +78,9 @@ export interface Lead {
   created_by_user_id?: number | null;
   owner_user_id?: number | null;
   updated_by_user_id?: number | null;
+  assignee_user_id?: number | null;
+  assignee_name?: string | null;
+  assignee_email?: string | null;
   ai_status?: AiStatus;
   ai_engine?: string;
   ai_last_run?: string;

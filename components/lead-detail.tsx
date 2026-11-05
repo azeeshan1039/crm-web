@@ -176,6 +176,13 @@ function LeadEditor({ lead, onClose }: { lead: LeadDetailT; onClose?: () => void
               {lead.founded && <span>since {lead.founded}</span>}
             </div>
             <h2 className="mt-1 truncate text-2xl font-semibold tracking-tight">{lead.company_name}</h2>
+            <AssigneeField
+              userId={v("assignee_user_id")}
+              name={lead.assignee_name}
+              email={lead.assignee_email}
+              disabled={!canMutate}
+              onChange={(id) => set("assignee_user_id", id)}
+            />
             <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-sm">
               {lead.website && (
                 <a href={lead.website} target="_blank" rel="noopener" className="inline-flex items-center gap-1 text-carbon hover:underline">
@@ -408,6 +415,7 @@ function LeadEditor({ lead, onClose }: { lead: LeadDetailT; onClose?: () => void
           {dirty ? "Save changes" : "Saved"}
         </Button>
         {!canMutate && <span className="text-sm text-muted-foreground">Only the lead owner can edit or delete this lead.</span>}
+        {canMutate && lead.owner_user_id == null && <span className="text-sm text-muted-foreground">Anyone signed in can edit or delete this lead.</span>}
         {["to_research", "drafted"].includes(lead.stage) && (
           <Button variant="outline" disabled={!canMutate || links.length > 0 || !v("subject") || !v("message_draft")}
             title={links.length ? "Remove every link from the message first" : undefined}
@@ -631,6 +639,35 @@ export function NativeSelect({ value, onChange, options, className }: {
       <option value="">Not set</option>
       {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
     </select>
+  );
+}
+
+function AssigneeField({ userId, name, email, disabled, onChange }: {
+  userId?: number | null; name?: string | null; email?: string | null; disabled: boolean; onChange: (id: number) => void;
+}) {
+  const { data } = useQuery({
+    queryKey: ["users"],
+    queryFn: () => api<{ users: { id: number; name: string; email: string }[] }>("/api/users"),
+    enabled: !disabled,
+  });
+  const label = name ? `${name}${email ? ` (${email})` : ""}` : "Unassigned";
+  if (disabled) {
+    return <div className="mt-2 text-sm text-muted-foreground">Assignee: <span className="text-foreground">{label}</span></div>;
+  }
+  return (
+    <label className="mt-2 flex max-w-md items-center gap-2 text-sm">
+      <span className="text-muted-foreground">Assignee</span>
+      <select value={userId == null ? "" : String(userId)} onChange={(e) => onChange(Number(e.target.value))}
+        className="h-8 min-w-0 flex-1 rounded-md border border-input bg-transparent px-2 text-sm dark:bg-input/30">
+        {!userId && <option value="">Choose who manages this lead</option>}
+        {userId && !(data?.users || []).some((user) => user.id === userId) && (
+          <option value={userId}>{label}</option>
+        )}
+        {(data?.users || []).map((user) => (
+          <option key={user.id} value={user.id}>{user.name} ({user.email})</option>
+        ))}
+      </select>
+    </label>
   );
 }
 
